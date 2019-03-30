@@ -16,10 +16,16 @@ int cols[4] = {10,9,8,7};
 int k = 0;
 
 // leds
-byte bytes_leds[16] = {142, 141, 139, 135,
-                        78, 77, 75, 71,
-                        46, 45, 43, 39,
-                        30, 29, 27, 23};
+//To light up a led we need the corresponding row on HIGH and all the others on LOW, and the corresponding column on LOW
+// and all the others on HIGH, for example: first column (left) and first row led would be 10000111 which is 135
+// 4 MSB for rows and 4 LSB for columns
+// for the sequence, a random number from bytes_leds will be chosen and then sent with the function shiftout( LSB first) 
+//throught a serie to paralel register to light up the leds
+
+byte bytes_leds[16] = {135, 139, 141, 142,  
+                        71, 75, 77, 78,
+                        39, 43, 45, 46,
+                        23, 27, 29, 30};
 int randNum;
 
 // array of randoms
@@ -67,7 +73,8 @@ void setup(){
   randomSeed(analogRead(0));
   }
 
-
+//the loop function either shows the sequence by executing combination_init or puts a button column on  HIGH
+// since it multiplexing between them rapidly, they seem to be always on HIGH, so we won't have a problem pushing the buttons.
 void loop(){
   if(continuar){
    if(!start_play){
@@ -87,6 +94,13 @@ void loop(){
   }
 
 // INTERRUPT
+//The interrupt functions gets executed when we push a button (the OR gate sends a 1)
+// then we make the byte number for the button pushed, if we push the first column, first row button we will get:
+// k = 0
+// button = 15 & ( 1 << (3 - 0)) = 00000111
+//then because it's the first row q0 = q1 = 0 (encoder, can be directly connected to arduino) we add 128 which is 10000000
+//this gives us 10000111 which is 135
+//and now if the led that was lighted up was 135 we get turn ++ and we can continue the game, otherwise we lose and we restart from 0
 void buttonToLed(){
     q0 = digitalRead(encod_0);
     q1 = digitalRead(encod_1);
@@ -115,7 +129,7 @@ void buttonToLed(){
 
 
 // combiations
-// randomly fills the array of leds to light up
+// randomly fills the array of leds to light up and lights them up
 void combinacion_init(){
   
   pinMode(encod_0,OUTPUT);
@@ -144,7 +158,7 @@ void combinacion_init(){
 
 
 // losing
-
+// Lights up all the leds one by one and then restarts the game.
 void losing(){
   digitalWrite(led_output, LOW);
   
