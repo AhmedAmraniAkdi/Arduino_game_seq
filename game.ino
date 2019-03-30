@@ -70,7 +70,7 @@ void setup(){
 
   Serial.begin(9600);
 
-  randomSeed(analogRead(0));
+  randomSeed(analogRead(0)); // read the noises on pin 0 and uses it as a seed.
   }
 
 //the loop function either shows the sequence by executing combination_init or puts a button column on  HIGH
@@ -116,7 +116,7 @@ void buttonToLed(){
       turns++;
       }else{
         continuar = false; Serial.println("\nYOU LOSE");Serial.println("\n");randomSeed(millis()); combs=0; turns=0;}
-      
+        // the time it took to lose becomes the seed.
     if(turns == combs){
         start_play = false; turns = 0;
         }
@@ -124,8 +124,7 @@ void buttonToLed(){
       continuar = false; winning = true;
       }
 
-    while(digitalRead(2)){} // hmed ur a genious
- }
+    while(digitalRead(2)){} // waits for the button to open, treates button debouncing
 
 
 // combiations
