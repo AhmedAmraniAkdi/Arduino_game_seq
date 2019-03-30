@@ -1,6 +1,9 @@
 # Arduino_game_seq
 A little arduino game, Arduino lights some leds up and you have to follow the sequence.
 
+Youtube video:
+https://www.youtube.com/watch?v=KzfPsS4-N6I
+
 
 I used a 74HC595 serie to paralel register for the leds.
 
